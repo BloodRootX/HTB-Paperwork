@@ -79,7 +79,7 @@ SSH as root
 I started with a full TCP Nmap scan:
 
 ```bash
-nmap -p- --min-rate 5000 -T4 10.129.106.36 -v
+nmap -p- --min-rate 5000 -T4 10.129.106.your_ip -v
 ```
 
 Important open ports:
@@ -93,6 +93,7 @@ Important open ports:
 The web application used a virtual host, so I added:
 
 ```text
+sudo nano /etc/hosts
 10.129.106.36 paperwork.htb
 ```
 
@@ -103,12 +104,6 @@ to `/etc/hosts`.
 # 2. Web Enumeration
 
 I added the virtual host to `/etc/hosts`:
-
-```text
-10.129.106.36 paperwork.htb
-```
-
-Opening:
 
 ```text
 http://paperwork.htb
@@ -843,13 +838,13 @@ The final privilege escalation was complete.
 ### User Flag
 
 ```text
-c0807754e63027de8fd9c9797313eaea
+********************************
 ```
 
 ### Root Flag
 
 ```text
-a0c3058de027b156148c31639241c8f1
+********************************
 ```
 
 ---
