@@ -79,7 +79,7 @@ SSH as root
 I started with a full TCP Nmap scan:
 
 ```bash
-nmap -sC -sV -p- 10.129.106.36
+nmap -p- --min-rate 5000 -T4 10.129.106.36 -v
 ```
 
 Important open ports:
