@@ -100,7 +100,7 @@ to `/etc/hosts`.
 
 ---
 
-# 2. # 2. Web Enumeration
+# 2. Web Enumeration
 
 I added the virtual host to `/etc/hosts`:
 
