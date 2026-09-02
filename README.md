@@ -100,25 +100,38 @@ to `/etc/hosts`.
 
 ---
 
-# 2. Web Enumeration
+# 2. # 2. Web Enumeration
 
-I enumerated the web application:
+I added the virtual host to `/etc/hosts`:
 
-```bash
-gobuster dir -u http://paperwork.htb \
--w /usr/share/wordlists/dirb/common.txt
+```text
+10.129.106.36 paperwork.htb
 ```
 
-An exposed application archive was discovered.
+Opening:
 
-After downloading and extracting the archive:
+```text
+http://paperwork.htb
+```
+
+directly revealed a page containing a **download link for the application archive**.
+
+I downloaded the archive and extracted it:
 
 ```bash
+wget http://paperwork.htb/<download-link>
 unzip paperwork-archive-v1.02.zip
 cd paperwork
 ```
 
-the application source code was available for offline analysis.
+The extracted archive contained the application's source code, including:
+
+```text
+server.py
+```
+
+This source code became the starting point for vulnerability analysis.
+
 
 ---
 
