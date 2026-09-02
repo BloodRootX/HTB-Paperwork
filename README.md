@@ -119,7 +119,7 @@ directly revealed a page containing a **download link for the application archiv
 I downloaded the archive and extracted it:
 
 ```bash
-wget http://paperwork.htb/<download-link>
+curl -H GET http://paperwork.htb/download/archive --output serverarchive
 unzip paperwork-archive-v1.02.zip
 cd paperwork
 ```
