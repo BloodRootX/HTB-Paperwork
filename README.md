@@ -120,8 +120,8 @@ I downloaded the archive and extracted it:
 
 ```bash
 curl -H GET http://paperwork.htb/download/archive --output paperwork-archive-v1.02
-unzip paperwork-archive-v1.02.zip
-cd paperwork
+unzip paperwork-archive-v1.02
+ls
 ```
 
 The extracted archive contained the application's source code, including:
