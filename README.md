@@ -1,4 +1,5 @@
-# Hack The Box — Paperwork
+# Hack The Box — Paperwork Write Up
+🔗 HTB Machine: https://app.hackthebox.com/machines/Paperwork
 
 ![HTB](https://img.shields.io/badge/Hack%20The%20Box-Paperwork-9FEF00?style=flat-square)
 ![OS](https://img.shields.io/badge/OS-Linux-blue?style=flat-square)
